@@ -1,7 +1,7 @@
-﻿using System;
+﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
+
 
 public class SnakeMovement : MonoBehaviour {
 
@@ -31,6 +31,7 @@ public class SnakeMovement : MonoBehaviour {
         MoveForward();
         Rotation();
         CamerFollow();
+        SpawnOrbManager();
     }
 
 	[Range(0.0f, 1.0f)]
@@ -57,6 +58,10 @@ public class SnakeMovement : MonoBehaviour {
     public Transform bodyObject;
     void OnCollisionEnter(Collision other) {
         if (other.transform.tag == "Orb") {
+            Transform child = other.transform.GetChild(0);
+            string text = child.GetComponent<TextMesh>().text;
+
+
             Destroy(other.gameObject);
 
             if (bodyParts.Count == 0)
@@ -71,6 +76,34 @@ public class SnakeMovement : MonoBehaviour {
                 bodyParts.Add(newBodyPart);
             }
         }
+    }
+
+
+    public float spawnOrbEveryXSeconds = 1;
+
+    public GameObject orbPrefab;
+
+    void SpawnOrbManager() {
+        StartCoroutine("CallEveryFewSeconds", spawnOrbEveryXSeconds);
+    }
+
+    IEnumerator CallEveryFewSeconds(float x) {
+        yield return new WaitForSeconds(x);
+        StopCoroutine("CallEveryFewSeconds");
+        Vector3 randomNewOrbPosition = new Vector3(
+                Random.Range(
+                    Random.Range(transform.position.x - 10, transform.position.x -5),
+                    Random.Range(transform.position.x + 5, transform.position.x + 10)
+                ),
+                Random.Range(
+                    Random.Range(transform.position.y - 10, transform.position.y - 5),
+                    Random.Range(transform.position.y + 5, transform.position.y + 10)
+                ), 
+                0
+            );
+        GameObject newOrb = Instantiate(orbPrefab, randomNewOrbPosition, Quaternion.identity) as GameObject;
+        GameObject orbParent = GameObject.Find("Orbs");
+        newOrb.transform.parent = orbParent.transform;
     }
 }
 
