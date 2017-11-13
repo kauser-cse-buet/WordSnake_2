@@ -20,7 +20,7 @@ public class LetterOnCube : MonoBehaviour {
 		
 	}
 
-    public char GetRandomLetter()
+    public static char GetRandomLetter()
     {
         string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         System.Random rnd = new System.Random();

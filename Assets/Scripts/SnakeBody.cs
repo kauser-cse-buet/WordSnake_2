@@ -33,11 +33,14 @@ public class SnakeBody : MonoBehaviour {
         {
             transform.position = Vector3.SmoothDamp(transform.position, head.position, ref movementVelocity, overTime);
             transform.LookAt(head.transform.position);
+			//Debug.Log (transform.position);
         }
         else {
             transform.position = Vector3.SmoothDamp(transform.position, 
                                                     head.GetComponent<SnakeMovement>().bodyParts[myOrder - 1].position, ref movementVelocity, overTime);
             transform.LookAt(head.transform.position);
+			//Debug.Log (transform.position);
+
         }
     }
 }
