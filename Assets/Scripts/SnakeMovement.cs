@@ -1,19 +1,32 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-
+using System.Linq;
 
 public class SnakeMovement : MonoBehaviour {
 
     public List<Transform> bodyParts = new List<Transform>();
     public string currentWord = string.Empty;
+    public TextAsset asset;
+    public string[] wordList { get; private set; }
+    public List<string> wordArrayList;
+    public int score = 0;
+    public GameManager gameManager;
 
-	// Use this for initialization
-	void Start () {
+
+    // Use this for initialization
+    void Start () {
         char headLetter = LetterOnCube.GetRandomLetter();
         transform.GetChild(0).GetComponent<TextMesh>().text = headLetter.ToString();
         currentWord += headLetter;
-        //HandleTextFile
+        
+        print("Number of words in dictionary: " + asset.text.Length);
+        wordList = asset.text.Split(new[] { System.Environment.NewLine },
+                         System.StringSplitOptions.None);
+
+        wordArrayList = new List<string>(wordList);
+        //score = 0;
+        
     }
 
     // Update is called once per frame
@@ -82,6 +95,25 @@ public class SnakeMovement : MonoBehaviour {
             string text = child.GetComponent<TextMesh>().text;
 
             currentWord += text;
+
+            var wordStartWithCurrentWordQueryResult = from word in wordArrayList
+                          where word.StartsWith(currentWord)
+                          select word;
+
+            List<string> wordStartWithCurrentWordList = wordStartWithCurrentWordQueryResult.ToList();
+
+            if (wordArrayList.Contains(currentWord.ToUpper()))
+            {
+                print("Correct word: " + currentWord);
+                score += currentWord.Length;
+            }
+            else {
+                print("!!! Wrong word: " + currentWord);
+
+                if (wordStartWithCurrentWordList.Count == 0) {
+                    FindObjectOfType<GameManager>().EndGame();
+                }
+            }
 
             Destroy(other.gameObject);
 
