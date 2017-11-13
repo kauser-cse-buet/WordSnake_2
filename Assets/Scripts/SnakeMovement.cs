@@ -13,6 +13,11 @@ public class SnakeMovement : MonoBehaviour {
     public int score = 0;
     public GameManager gameManager;
 
+    public Transform leftWall;
+    public Transform rightWall;
+    public Transform topWall;
+    public Transform bottomWall;
+
 
     // Use this for initialization
     void Start () {
@@ -89,6 +94,7 @@ public class SnakeMovement : MonoBehaviour {
 
     public Transform bodyObject;
     void OnCollisionEnter(Collision other) {
+
         if (other.transform.tag == "Orb") {
 			Debug.Log ("collision orb");
             Transform child = other.transform.GetChild(0);
@@ -142,7 +148,7 @@ public class SnakeMovement : MonoBehaviour {
     }
 
 
-    public float spawnOrbEveryXSeconds = 1;
+    public float spawnOrbEveryXSeconds = 2;
 
     public GameObject orbPrefab;
 
@@ -155,12 +161,12 @@ public class SnakeMovement : MonoBehaviour {
         StopCoroutine("CallEveryFewSeconds");
         Vector3 randomNewOrbPosition = new Vector3(
                 Random.Range(
-                    Random.Range(transform.position.x - 10, transform.position.x -5),
-                    Random.Range(transform.position.x + 5, transform.position.x + 10)
+                    Random.Range(leftWall.position.x, transform.position.x - 10),
+                    Random.Range(transform.position.x + 10, rightWall.position.x)
                 ),
                 Random.Range(
-                    Random.Range(transform.position.y - 10, transform.position.y - 5),
-                    Random.Range(transform.position.y + 5, transform.position.y + 10)
+                    Random.Range(topWall.position.y, transform.position.y - 10),
+                    Random.Range(transform.position.y + 10, bottomWall.position.y)
                 ), 
                 0
             );
