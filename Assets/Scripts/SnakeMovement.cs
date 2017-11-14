@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System;
+using S1;
 
 public class SnakeMovement : MonoBehaviour {
 
@@ -11,7 +13,7 @@ public class SnakeMovement : MonoBehaviour {
     public string[] wordList { get; private set; }
     public List<string> wordArrayList;
     public int score = 0;
-    public GameManager gameManager;
+    public GameManager_Master gameManagerMaster;
 
     public Transform leftWall;
     public Transform rightWall;
@@ -21,9 +23,7 @@ public class SnakeMovement : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        char headLetter = LetterOnCube.GetRandomLetter();
-        transform.GetChild(0).GetComponent<TextMesh>().text = headLetter.ToString();
-        currentWord += headLetter;
+        SetSnakeHeadLetter();
         
         print("Number of words in dictionary: " + asset.text.Length);
         wordList = asset.text.Split(new[] { System.Environment.NewLine },
@@ -34,20 +34,43 @@ public class SnakeMovement : MonoBehaviour {
         
     }
 
+    void SetSnakeHeadLetter() {
+        char headLetter = LetterOnCube.GetRandomLetter();
+        transform.GetChild(0).GetComponent<TextMesh>().text = headLetter.ToString();
+        currentWord = headLetter.ToString();
+    }
+
     // Update is called once per frame
     void Update() {
-        if (Input.GetKey(KeyCode.A)) {
+        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)) {
             currentRotation += rotationSensitivity * Time.deltaTime;
 			//Debug.Log ("A: current rotation");
 			//Debug.Log (currentRotation);
         }
 
-        if (Input.GetKey(KeyCode.D)) {
+        if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)) {
             currentRotation -= rotationSensitivity * Time.deltaTime;
 			//Debug.Log ("D: current rotation");
 			//Debug.Log (currentRotation);
         }
+
+        if (Input.GetKey(KeyCode.Space)) {
+            print("Pressed Enter: CutTailAndResetLetter");
+            CutTailAndResetLetter();
+        }
 	}
+
+    private void CutTailAndResetLetter()
+    {
+        foreach (Transform bodyPart in bodyParts)
+        {
+            Destroy(bodyPart.gameObject);
+        }
+
+        bodyParts = new List<Transform>();
+
+        SetSnakeHeadLetter();
+    }
 
     public float speed = 3.5f;
     public float rotationSensitivity = 50.0f;
@@ -117,7 +140,8 @@ public class SnakeMovement : MonoBehaviour {
                 print("!!! Wrong word: " + currentWord);
 
                 if (wordStartWithCurrentWordList.Count == 0) {
-                    FindObjectOfType<GameManager>().EndGame();
+                    //FindObjectOfType<GameManager>().EndGame();
+                    gameManagerMaster.CallGameOverEvent();
                 }
             }
 
@@ -160,13 +184,13 @@ public class SnakeMovement : MonoBehaviour {
         yield return new WaitForSeconds(x);
         StopCoroutine("CallEveryFewSeconds");
         Vector3 randomNewOrbPosition = new Vector3(
-                Random.Range(
-                    Random.Range(leftWall.position.x, transform.position.x - 10),
-                    Random.Range(transform.position.x + 10, rightWall.position.x)
+                UnityEngine.Random.Range(
+                    UnityEngine.Random.Range(leftWall.position.x, transform.position.x - 10),
+                    UnityEngine.Random.Range(transform.position.x + 10, rightWall.position.x)
                 ),
-                Random.Range(
-                    Random.Range(topWall.position.y, transform.position.y - 10),
-                    Random.Range(transform.position.y + 10, bottomWall.position.y)
+                UnityEngine.Random.Range(
+                    UnityEngine.Random.Range(topWall.position.y, transform.position.y - 10),
+                    UnityEngine.Random.Range(transform.position.y + 10, bottomWall.position.y)
                 ), 
                 0
             );
