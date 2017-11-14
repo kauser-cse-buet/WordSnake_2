@@ -29,9 +29,7 @@ namespace S1 {
         {
             if (panelGameControl != null)
             {
-                panelGameControl.SetActive(!panelGameControl.activeSelf);
-                gameManagerMaster.isGameControlUIOn = !gameManagerMaster.isGameControlUIOn;
-                gameManagerMaster.CallGameControlUIToggleEvent();
+                panelGameControl.SetActive(!panelGameControl.activeSelf);   
             }
         }
     }

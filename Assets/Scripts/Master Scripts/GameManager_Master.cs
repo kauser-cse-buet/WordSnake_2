@@ -69,6 +69,7 @@ namespace S1 {
         {
             if (GameControlUIToggleEvent != null)
             {
+                isGameControlUIOn = true;
                 GameControlUIToggleEvent();
             }
         }
