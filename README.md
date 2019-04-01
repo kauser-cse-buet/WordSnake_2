@@ -14,4 +14,4 @@ right: d/right arrow.
 up: w/up arrow.
 down: s/down arrow.
 
-### There is still some bug. Please report bugs if you found any. Thanks.
+### There are still some bugs. Please report bugs if you found any. Thanks.
